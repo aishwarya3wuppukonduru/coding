@@ -1,0 +1,87 @@
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main{
+    public static void main(String args[]){
+        Frame f=new Frame("Examination");
+        f.setSize(600,600);
+        Label l=new Label("Area to see your courses");
+        l.setBounds(300,50,300,100);
+        List l1=new List(4,true);
+        l1.setBounds(100,100,70,50);
+        List l2=new List(4,true);
+        l2.setBounds(200,100,70,50);
+        Button b1=new Button("click to know");
+        b1.setBounds(150,250,70,70);
+        Button b2=new Button("click to display");
+        b2.setBounds(250,250,70,70);
+        Choice c1=new Choice();
+        c1.setBounds(150,200,70,70);
+        c1.add("Semester1");
+        c1.add("Semester2");
+        c1.add("Semester3");
+        b1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+        String data = c1.getItem(c1.getSelectedIndex());
+        if(data=="Semester1"){
+            l1.removeAll();
+            l2.removeAll();
+            l1.add("COA");
+            l1.add("OOPS");
+            l1.add("AAD");
+            l1.add("CDC");
+            l2.add("COA101");
+            l2.add("COA102");
+            l2.add("COA103");
+            l2.add("COA104");}
+        else if(data=="Semester2"){
+            l1.removeAll();
+            l2.removeAll();
+            l1.add("eco");
+            l1.add("Bio");
+            l1.add("python");
+            l1.add("DSA");
+            l2.add("ECO102");
+            l2.add("BIO102");
+            l2.add("PYT102");
+            l2.add("DSA102");   
+        }
+        else if(data=="Semester3"){
+            l1.removeAll();
+            l2.removeAll();
+            l1.add("mathsA");
+            l1.add("mathsB");
+            l1.add("html");
+            l1.add("Telugu");
+            l2.add("MAA103");
+            l2.add("MAB103");
+            l2.add("HTM103");
+            l2.add("CHE103");
+
+        }
+        }});
+
+        
+        b2.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                String data1="Selected Courses: ";
+                for(String data2:l1.getSelectedItems()){
+                    data1+=data2+",\n";
+                    l.setText(data1);
+                }
+                
+            }
+        });
+        
+
+        f.add(l);
+        f.add(b1);
+        f.add(b2);
+        f.add(c1);
+        f.add(l1);
+        f.add(l2);
+        f.setLayout(null);
+        f.setVisible(true);
+    }
+}
+
