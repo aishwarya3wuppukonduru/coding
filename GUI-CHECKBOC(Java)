@@ -1,0 +1,162 @@
+import java.awt.*;
+import java.util.*;
+import java.awt.event.*;
+import java.io.*;
+import java.lang.*;
+
+class teacher{
+    String name;
+    String sallary;
+    String subject;
+    public teacher(String name,String sallary,String subject){
+        this.name=name;
+        this.sallary=sallary;
+        this.subject=subject;
+    }
+    public String total_info(){
+        return ("Name: "+name+", sallary: "+sallary+", subject: "+subject);
+
+    }
+}
+
+class Student{
+    String name;
+    String rollnum;
+    String qualification;
+    public Student(String name,String rollnum,String qualification){
+        this.name=name;
+        this.rollnum=rollnum;
+        this.qualification=qualification;
+    }
+    public String total_info(){
+        return ("Name: "+name+", rollnum: "+rollnum+", qualification: "+qualification);
+
+    }
+}
+public class Main extends Frame implements ActionListener{
+    TextField tf1,tf2,tf3,tf4,tf5;
+    Button b1,b2,b3,b4,b5;
+    Checkbox cb1,cb2,cb3,cb4,cb5;
+    Main(){
+        
+        //tf1 for selecting which file is opened.
+        tf1 = new TextField("Choose between 'Student' and 'Teacher' file");
+        tf1.setBounds(50,100,300,20);
+        tf1.setEditable(false);
+        
+        //cb1,cb2 are Students and teachers Checkbox
+        cb1 = new Checkbox("Students",false);
+        cb1.setBounds(50,150,100,50);
+        cb2 = new Checkbox("Teachers",false);
+        cb2.setBounds(50,200,100,50);
+        
+        //tf2 for editing details
+        tf2=new TextField("Enter details if u want to store in file (Format - 'Name sallary subject ')");  
+        tf2.setBounds(50,250,500,30);
+        
+        //tf3 shows data stored : succesfullness
+        tf3=new TextField("Shows file succesfullness");  
+        tf3.setBounds(50,300,500,20);  
+        tf3.setEditable(false);
+        
+        //tf4 shows data stored : succesfullness
+        tf4=new TextField("shows teacher details who teaches us 2 classes");  
+        tf4.setBounds(50,350,500,20);  
+        tf4.setEditable(false);
+        
+        //b1 for storing data
+        b1=new Button("student : store data");  
+        b1.setBounds(50,400,150,50);
+
+        //b2 for storing data
+        b2 = new Button("Teachers : store data");  
+        b2.setBounds(250,400,150,50);
+        
+        //b3 for storing data
+        b3 = new Button("Click me for teacher details");  
+        b3.setBounds(150,500,150,50);
+        
+        //adding everything
+        add(tf1);add(cb1);add(cb2);add(tf2);add(tf3);add(b1);add(b2);add(tf4);add(b3);
+        setSize(600,600);
+        setLayout(null);
+        setVisible(true);
+        
+        //Action listener
+        b1.addActionListener(this); 
+        b2.addActionListener(this); 
+        b3.addActionListener(this);  
+        tf2.addActionListener(this);
+        
+        cb1.addItemListener(new ItemListener() {  
+             public void itemStateChanged(ItemEvent e) {               
+                tf1.setText("Students file opened "   
+                + (e.getStateChange()==1?"checked":"unchecked"));  
+             }  
+          }); 
+          cb2.addItemListener(new ItemListener() {  
+             public void itemStateChanged(ItemEvent e) {               
+                tf1.setText("teachers file opened "   
+                + (e.getStateChange()==1?"checked":"unchecked"));  
+             }  
+          });
+    }
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource()==b3){
+            tf4.setText("Vadivelu : Java");
+        }
+        try{
+            if(e.getSource()==b1){
+                String t = tf2.getText();
+                String word="";
+                int i;
+                char space=' ';
+                for(i=0; i<t.length(); i++){
+                    if(t.charAt(i)==space){
+	                    File file =new File("studentsinfo.txt");
+    	                FileWriter fw = new FileWriter(file,true);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        bw.write("\n");
+                        bw.write(word);
+                        bw.close();
+                        word="";
+	                }else{
+	                    word=word+t.charAt(i);
+	                }
+                }
+                tf3.setText("Done writing to file");
+            }
+         }catch(Exception ex){
+            tf3.setText("Something went wrong");
+        }
+        try{
+            if(e.getSource()==b2){
+                String t = tf2.getText();
+                String word="";
+                int i;
+                char space=' ';
+                for(i=0; i<t.length(); i++){
+                    if(t.charAt(i)==space){
+	                    File file =new File("teachersinfo.txt");
+    	                FileWriter fw = new FileWriter(file,true);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        bw.write("\n");
+                        bw.write(word);
+                        bw.close();
+                        word="";
+	                }else{
+	                    word=word+t.charAt(i);
+	                }
+                }
+                tf3.setText("Done writing to file");
+            }
+         }catch(Exception ex){
+            tf3.setText("Something went wrong");
+        }
+    }
+    public static void main(String args[]){
+        new Main();
+    }
+    
+}
+
