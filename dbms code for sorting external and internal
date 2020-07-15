@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int n;
+
+struct student{
+    int rollno;
+    char name[30];
+    int section;
+    int age;
+};
+
+void sort1(){
+    
+    struct student stud[n];
+    char ch;
+    FILE *fp;
+	int i=0,size,j;
+	struct student temp;
+	fp=fopen("data1.txt","r");
+    while(ch!=EOF){
+        fscanf(fp,"%d %s %d %d",&stud[i].rollno,stud[i].name,&stud[i].section,&stud[i].age);  
+	    ch=fgetc(fp); 
+	    i++;  
+	} 
+	size=i-1;
+	for(i=1;i<size;++i){
+	    for(j=0;j<size-i;j++){
+    	    if(stud[j+1].rollno<stud[j].rollno){
+        	    temp=stud[j];
+        	    stud[j]=stud[j+1];
+        	    stud[j+1]=temp;
+        	}
+    	}
+	    
+	}
+	fp=fopen("sorted1.txt","a");
+	
+	for(i=0;i<size;i++){
+	    fprintf(fp,"%d %s %d %d\n",stud[i].rollno,stud[i].name,stud[i].section,stud[i].age);
+	}
+	
+	printf("\nThe data1 is sorted successfully and saved as sorted1.txt. \n \n");
+	fclose(fp);
+}
+void sort2(){
+    
+    struct student stud[n];
+    char ch;
+    FILE *fp;
+	int i=0,size,j;
+	struct student temp;
+	fp=fopen("data2.txt","r");
+    while(ch!=EOF){
+        fscanf(fp,"%d %s %d %d",&stud[i].rollno,stud[i].name,&stud[i].section,&stud[i].age);  
+	    ch=fgetc(fp); 
+	    i++;  
+	} 
+	size=i-1;
+	for(i=1;i<size;++i){
+	    for(j=0;j<size-i;j++){
+    	    if(stud[j+1].rollno<stud[j].rollno){
+        	    temp=stud[j];
+        	    stud[j]=stud[j+1];
+        	    stud[j+1]=temp;
+        	}
+    	}
+	    
+	}
+	fp=fopen("sorted2.txt","a");
+	
+	for(i=0;i<size;i++){
+	    fprintf(fp,"%d %s %d %d\n",stud[i].rollno,stud[i].name,stud[i].section,stud[i].age);
+	}
+	
+	printf("\nThe data2 is sorted successfully and saved as sorted2.txt.\n");
+	fclose(fp);
+}
+
+int main(){
+    
+    FILE *fp1,*fp2,*fp3;
+    printf("How many student's data you want to store..?\n");
+    scanf("%d",&n);
+    struct student s[n];
+    
+    fp1 = fopen("data1.txt", "a");
+    fp2 = fopen("data2.txt", "a");
+    
+    printf("\nEnter student details(Roll no. , Name, Section, Age):\n");
+    
+    for(int i=0;i<n;i++){
+        scanf("%d %s %d %d",&s[i].rollno,s[i].name,&s[i].section,&s[i].age);
+    }
+    int mid=0;
+    for(int i=0;i<n;i++){
+        mid=mid+s[i].rollno;
+    }
+    mid=mid/n;
+    for(int i=0;i<n;i++){
+        if(s[i].rollno>mid){
+            fprintf(fp2,"%d %s %d %d\n", s[i].rollno,s[i].name,s[i].section,s[i].age);
+        }
+        else{
+            fprintf(fp1,"%d %s %d %d\n", s[i].rollno,s[i].name,s[i].section,s[i].age);
+        }
+    }
+    fclose(fp1);
+    fclose(fp2);
+    
+    int c;
+    do{
+        printf("\n---Select your choice---------\n");
+        printf("\n1. SORT 1st file");
+        printf("\n2. SORT 2nd file");
+        printf("\n3. EXTERNAL SORT");
+        printf("\n4. EXIT");
+        printf("\n\n------------------------------------------\n");
+        printf("\nEnter your choice:");
+        scanf("%d", &c);
+        printf("\n");
+        switch (c){
+            case 1:
+                sort1();
+                break;  
+                
+            case 2:
+                sort2();
+                break;
+    
+            case 3:
+                fp1 = fopen("sorted1.txt", "r"); 
+                fp2 = fopen("sorted2.txt", "r"); 
+              
+                // Open file to store the result 
+                FILE *fp3 = fopen("externalsorting.txt", "w"); 
+                char ch; 
+              
+                if (fp1 == NULL || fp2 == NULL || fp3 == NULL) 
+                { 
+                      puts("Could not open files"); 
+                      exit(0); 
+                } 
+              
+                // Copy contents of first file to file3.txt 
+                while ((ch = fgetc(fp1)) != EOF) 
+                   fputc(ch, fp3); 
+                   
+                // Copy contents of second file to file3.txt 
+                while ((ch = fgetc(fp2)) != EOF) 
+                   fputc(ch, fp3); 
+               
+                printf("Merged sorted1.txt and sorted2.txt into sorted3.txt"); 
+               
+                fclose(fp1); 
+                fclose(fp2); 
+                fclose(fp3); 
+                 
+                
+            default:
+                printf("\nYour choice is wrong\nPlease try again...\n");
+                break;
+            
+        }
+    } 
+    while (c != 4);
+        
+}
