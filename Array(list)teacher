@@ -1,0 +1,80 @@
+import java.util.*;
+import java.io.*;
+
+class teacher{
+    String name;
+    String sallary;
+    String subject;
+    public teacher(String name,String sallary,String subject){
+        this.name=name;
+        this.sallary=sallary;
+        this.subject=subject;
+    }
+    public void total_info(){
+        System.out.println("Name: "+name);
+        System.out.println("Sallary: "+sallary);
+        System.out.println("Subject: "+subject);
+    }
+}
+
+class student{
+    String name;
+    String rollno;
+    String branch;
+    public student(String name,String rollno,String branch){
+        this.name=name;
+        this.rollno=rollno;
+        this.branch=branch;
+    }
+    public void total_info(){
+        System.out.println("Name: "+name);
+        System.out.println("rollno: "+rollno);
+        System.out.println("branch: "+branch);
+    }
+}
+
+class Main{
+    public static void main(String[] args)throws Exception{
+        
+        ArrayList<teacher> obj=new ArrayList<teacher>();
+        Scanner fr=new Scanner(new File("teacherinfo.txt"));    
+        int i,x=1;    
+        String na="";
+        String sa="";
+        String su="";
+        while(fr.hasNextLine()){
+            String line=fr.nextLine();
+            if(x%3==1){
+                na=line;
+            }
+            else if(x%3==2){
+                sa=line;
+            }
+            else if(x%3==0){
+                su=line;
+                obj.add(new teacher(na,sa,su));
+                na="";
+                sa="";
+                su="";
+            }
+            x++;
+        }
+        fr.close();    
+        
+        int c=0;
+        Iterator<teacher> itr1=obj.iterator();
+        Scanner j=new Scanner(System.in);
+        System.out.print("Enter the subject to search teacher: ");
+        String t=j.nextLine();
+        while(itr1.hasNext()){
+            teacher h=itr1.next();
+            if(t.equals(h.subject)){
+                c++;
+                h.total_info();
+            }
+        }
+        if(c==0){
+            System.out.println("No one teaching that subject");
+        }
+    }
+} 
