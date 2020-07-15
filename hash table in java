@@ -1,0 +1,123 @@
+import java.util.*;
+import java.io.*;
+
+class Main{
+    public static void main(String[] args){  
+        
+        // Creating dictionary using Hashtable
+        Hashtable<String,String> map=new Hashtable<String,String>();    
+        map.put("why","kyu ");    
+        map.put("so","itne ");   
+        map.put("serious","gambheer ");
+        map.put("smile","muskurao ");
+        map.put("please","kripya ");
+        map.put("lets","chalo ");
+        map.put("put","rakhe ");
+        map.put("face","sakal ");
+        map.put("do","kya ");
+        map.put("i","mai ");
+        map.put("look","dikhna ");
+        map.put("like","jaise ");
+        map.put("kidding","mazak ");
+        map.put("really","jaruri ");
+        map.put("have","hai ");
+        map.put("congratulate","protsahan ");
+        map.put("myself","apne ap ko ");
+        map.put("this","iss ");
+        map.put("one","pai ");
+        map.put("ever","kabhi ");
+        map.put("danced","nacha ");
+        map.put("with","sath ");
+        map.put("devil","raksus ");
+        map.put("moonlight","chandniraat ");
+        map.put("wand","chadhi ");
+        map.put("chooses","chunta ");
+        map.put("wizard","chadugar ");
+        map.put("remember","yaad akho ");
+        map.put("think","sochta ");
+        map.put("we","hu ");
+        map.put("must","jaroor ");
+        map.put("expect","ummed ");
+        map.put("great","baadi ");
+        map.put("things","cheeje ");
+        map.put("from","se ");
+        map.put("you","apse ");
+        map.put("loose","harro ");
+        map.put("something","guchto ");
+        map.put("now","abhi ");
+        map.put("win","jeeto ");
+        map.put("later","baadme ");
+        map.put("good","subh ");
+        map.put("morning","udai ");
+        map.put("king","raaja ");
+        map.put("world","duniya ");
+        map.put("mister","mister ");
+        map.put("potter","potter ");
+        //Creating clean dialouges file
+         try {
+	            File file = new File("cleanDialouges.txt");
+                boolean fvar = file.createNewFile();
+	            if (fvar){
+	                System.out.println("");
+	                System.out.println("File has been created successfully");
+	            }
+    	    } catch (IOException e) {
+    		    System.out.println("Exception Occurred:");
+	            }
+	    System.out.println("File created");
+	    System.out.println("--------------------------------");
+	   // Getting clean dialouge from full dialouges
+        try{
+            
+            FileReader fr=null;
+	        fr = new FileReader("Dialogues.txt");
+	        int ch;
+	        String word="";
+	        while ((ch=fr.read())!=-1){
+	            if(ch!=32||ch!=10){
+	                word=word+(char)ch;
+	                
+	            }
+	            
+	            if(ch==32||ch==10){
+	                try{
+	                    if(Objects.equals(word,"a ")||Objects.equals(word,"am ")||Objects.equals(word,"on ")||Objects.equals(word,"to ")||Objects.equals(word,"of ")||Objects.equals(word,"in ")||Objects.equals(word,"the ")||Objects.equals(word,"that ")){
+	                        word="";
+	                    }
+	                    else{
+	                        File file =new File("cleanDialouges.txt");
+    	                    FileWriter fw = new FileWriter(file,true);
+                            BufferedWriter bw = new BufferedWriter(fw);
+                            bw.write(word);
+                            bw.close();
+                            word="";
+	                    }
+    	            }catch(Exception e){
+    	                System.out.println(e);
+    	           }
+	            }
+	        }
+        }catch(IOException e){
+            System.out.println("Exception Occured");
+        }
+        System.out.println("'Clean Dialouges' file is created");
+        System.out.println("-------------------------------------");
+        
+        //Here, we specify the if and else statement as arguments of the method 
+        System.out.println("Translating words---->");
+        //Code starts
+        try{
+            Scanner fr=new Scanner(new File("cleanDialouges.txt"));
+            while(fr.hasNextLine()){
+                String currentLine = fr.nextLine();
+                String[] words = currentLine.split(" ");     // the delimiter inside the quotes
+                for(String a : words){
+                   System.out.println(a + " :" +map.getOrDefault(a, "Not Found"));
+                }
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        System.out.println("-------------------------------------");
+    }  
+}  
