@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+struct record{
+    int roll;
+    char name[100];
+    struct record *next;
+};
+
+int main(){
+    struct record *head = NULL;
+    struct record *tail = NULL;
+    head = tail = malloc(sizeof(struct record));
+    int num;
+    printf("How many data you want to store: ");
+    scanf("%d",&num);
+    printf("Roll no: ");
+    scanf("%d",&(tail->roll));
+    printf("Name: ");
+    scanf("%s",tail->name);
+    tail->next=malloc(sizeof(struct record));
+    tail=tail->next;
+    tail->next=NULL;
+    
+    for(int i=0;i<num-1;i++){
+        printf("Roll no: ");
+        scanf("%d",&(tail->roll));
+        printf("Name: ");
+        scanf("%s",tail->name);
+        tail->next=malloc(sizeof(struct record));
+        tail=tail->next;
+        tail->next=NULL;
+    }
+    struct record *p;
+    p=head;
+    while(p!=NULL){
+        printf("%s %d---->",p->name,p->roll);
+        p=p->next;
+    }
+}
