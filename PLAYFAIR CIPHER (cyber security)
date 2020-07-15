@@ -1,0 +1,187 @@
+key=input("Enter key :\n")
+L=[]
+for e in key.upper():
+    if e not in L:
+        L.append(e)
+alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+for e in alphabet:
+    if e not in L:
+        L.append(e)
+key_matrix=[L[0:5],L[5:10],L[10:15],L[15:20],L[20:25]]
+print("\n")
+print(key_matrix,"\n")
+#Giving choice for encryption and decryption
+print("***************************************")
+print("Menu\n1.Encrypt\n2.Decrypt")
+choice=input("Enter your choice:\n")
+
+if (choice=='1'):
+    e_m=[] #encrpyt matrix
+    encrpyt=input("Enter your code for encrypting :\n")
+    encrpyt=encrpyt.replace('j','i') #convert 'j' to 'i'
+    encrpyt=encrpyt.upper() #makes it upper
+    d=len(encrpyt)
+    if d%2==0:
+        e=int(d/2)
+    else:
+        encrpyt=encrpyt+"X"
+        d=len(encrpyt)
+        e=int(d/2)
+    j=0
+    for i in range(0,e):
+        e_m.append(encrpyt[j:j+2])
+        j=j+2
+        
+    print(e_m) #split matrix
+    
+    encrypted_word=[] #encrpyted words are here
+    word=''
+    for i in range(0,e):
+        d=e_m[i]
+        letter1=d[0]
+        letter2=d[1]
+        x_i=0 #x is for letter 1
+        x_j=0
+        y_i=0 #y is for letter 2
+        y_j=0
+        for k in range(5): # Next two loops are for searching position of letter1
+            for l in range(5):
+                if key_matrix[k][l]==letter1:
+                    x_i=k
+                    x_j=l
+        for k in range(5): # Next two loops are for searching position of letter2
+            for l in range(5):
+                if key_matrix[k][l]==letter2:
+                    y_i=k
+                    y_j=l
+        if (x_i==y_i): #checking row
+            x_j=(x_j+1)
+            y_j=(y_j+1)
+            #Now creating a range
+            if(x_i>4):
+                x_i=0
+            if(x_j>4):
+                x_j=0
+            if(y_i>4):
+                y_i=0
+            if(y_j>4):
+                y_j=0
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            encrypted_word.append(word)
+        elif (x_j==y_j): #checking column
+            x_i=(x_i+1)
+            y_i=(y_i+1)
+            #Now creating a range
+            if(x_i>4):
+                x_i=0
+            if(x_j>4):
+                x_j=0
+            if(y_i>4):
+                y_i=0
+            if(y_j>4):
+                y_j=0
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            encrypted_word.append(word)
+        else : #for diagonal
+            temp=x_j
+            x_j=y_j
+            y_j=temp
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            encrypted_word.append(word)
+            
+    encryptedword=''
+    for i in encrypted_word:
+        encryptedword=encryptedword+i    
+            
+    print(encrypted_word)
+    print(encryptedword)
+    
+    
+
+if (choice=='2'):
+    d_m=[] #decrpyt matrix
+    decrpyt=input("Enter your code for decrpyting :\n")
+    decrpyt=decrpyt.replace('j','i') #convert 'j' to 'i'
+    decrpyt=decrpyt.upper() #makes it upper
+    d=len(decrpyt)
+    if d%2==0:
+        e=int(d/2)
+    else:
+        decrpyt=decrpyt+"X"
+        d=len(decrpyt)
+        e=int(d/2)
+    j=0
+    for i in range(0,e):
+        d_m.append(decrpyt[j:j+2])
+        j=j+2
+        
+    print(d_m) #split matrix
+    
+    decrpyted_word=[] #encrpyted words are here
+    word=''
+    for i in range(0,e):
+        f=d_m[i]
+        letter1=f[0]
+        letter2=f[1]
+        x_i=0 #x is for letter 1
+        x_j=0
+        y_i=0 #y is for letter 2
+        y_j=0
+        for k in range(5): # Next two loops are for searching position of letter1
+            for l in range(5):
+                if key_matrix[k][l]==letter1:
+                    x_i=k
+                    x_j=l
+        for k in range(5): # Next two loops are for searching position of letter2
+            for l in range(5):
+                if key_matrix[k][l]==letter2:
+                    y_i=k
+                    y_j=l
+        if (x_i==y_i): #checking row
+            x_j=(x_j-1)
+            y_j=(y_j-1)
+            #Now creating a range
+            if(x_i<0):
+                x_i=4
+            if(x_j<0):
+                x_j=4
+            if(y_i<0):
+                y_i=4
+            if(y_j<0):
+                y_j=4
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            decrpyted_word.append(word)
+        elif (x_j==y_j): #checking column
+            x_i=(x_i-1)
+            y_i=(y_i-1)
+            #Now creating a range
+            if(x_i<0):
+                x_i=4
+            if(x_j<0):
+                x_j=4
+            if(y_i<0):
+                y_i=4
+            if(y_j<0):
+                y_j=4
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            decrpyted_word.append(word)
+        else : #for diagonal
+            temp=x_j
+            x_j=y_j
+            y_j=temp
+            word=key_matrix[x_i][x_j]+key_matrix[y_i][y_j] # for joining 2 words
+            decrpyted_word.append(word)
+            
+    decrpytedword=''
+    for i in decrpyted_word:
+        decrpytedword=decrpytedword+i    
+            
+    print(decrpyted_word)
+    print(decrpytedword)
+    
+ 
+    
+elif (choice!=1 or choice!=2):
+    print("Wrong choice")
+        
+        
