@@ -1,0 +1,77 @@
+
+#include <iostream>
+#include <time.h>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iomanip>
+#include <algorithm>
+#include <bits/stdc++.h> 
+using namespace std; 
+vector<int> number;
+
+int repeated_digit(int n) 
+{ 
+    int z=n;
+    unordered_set<int> s; 
+  
+    // Traversing through each digit 
+    while(n != 0) 
+    { 
+        int d = n % 10; 
+  
+        // if the digit is present 
+        // more than once in the 
+        // number 
+        if(s.find(d) != s.end()) 
+        { 
+            // return 0 if the number 
+            // has repeated digit 
+            return 0; 
+        } 
+        s.insert(d); 
+        n = n / 10; 
+    } 
+    // return 1 if the number has  
+    // no repeated digit
+    number.push_back(z);
+    return 1; 
+} 
+  
+// Function to find total number 
+// in the given range which has 
+// no repeated digit 
+int calculate(int L,int R) 
+{ 
+    int answer = 0; 
+  
+    // Traversing through the range 
+    for(int i = L; i < R + 1; ++i) 
+    { 
+  
+        // Add 1 to the answer if i has 
+        // no repeated digit else 0 
+        answer = answer + repeated_digit(i); 
+    } 
+  
+    return answer ; 
+} 
+  
+// Driver Code 
+int main() 
+{ 
+    int L = 1000, R = 9999; 
+  
+    // Calling the calculate 
+    calculate(L, R); 
+    srand(time(NULL));
+            int RandIndex = rand() % 4536; //generates a random number between 0 and 3
+            ostringstream geek;
+            geek << number[RandIndex];
+            string secret_number = geek.str();
+            cout<<secret_number<<endl;
+    
+    return 0; 
+    
+} 
+
