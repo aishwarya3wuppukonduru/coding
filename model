@@ -1,0 +1,26 @@
+import java.util.*;
+import java.io.*;
+public class Main{
+	public static void main(String[] args) {
+	    try{
+            FileReader fr=null;
+	        fr = new FileReader("Dialogues.txt");
+	        int ch;
+	        String word="";
+	        
+	        while ((ch=fr.read())!=-1){
+	            
+	            if(ch==32){
+	                word=word+"L";
+	                System.out.print(word);
+	                System.out.print("word");
+	                if(Integer.parseInt(word)==Integer.parseInt("L")){
+	                   break;
+	                }
+	            }
+	        }
+        }catch(IOException e){
+            System.out.println(e);
+        }
+	}
+}
