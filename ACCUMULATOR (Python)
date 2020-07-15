@@ -1,0 +1,85 @@
+# Intialize the variables 
+a=""
+b=""
+convertbinary="" #Used this variable for converting characters to binary file(.bin)
+i=0
+l=0
+k=0
+flag=0 # if flag = 1 that means opcode is there
+
+#Handling files--->
+f=open("code.txt","r") #File which contains code
+fw=open("stringfile.txt","w") #File which conatins string values which is like bit values of given instruction
+fb=open("bytefile.bin","wb") #File contains binary interpreted values
+
+#Creating dictionary -->
+
+#Opcode dictionary
+op=dict({'AND':'000','ADD':'001','LDA':'010','STA':'011','BUN':'100','CALL':'101','SUB':'110'})
+#Register reference instruction
+rri=dict({'CLA':'7800','CMA':'7400','INC':'7200','HLT':'7100','INP':'F800','OUT':'F400','SKI':'F200','SKO':'F100','ION':'F080','IOF':'F040'})
+#Mode 
+mode=dict({'#':'0','@':'1'}) # "#-direct" and "@-Indirect"
+#IO (Just for reference)
+io=dict({'INP':'F800','OUT':'F400','SKI':'F200','SKO':'F100','ION':'F080','IOF':'F040'})
+
+
+for ch in f.read(): # Reading character from file 
+    ch=ch.upper() # converting it to upper case
+    if (ch!="@" and ch!="#" and ch!="\n"):
+        a=a+ch # concatenation
+    if a in rri.keys(): # comparing values with "rrl dictionary"
+        flag=0 #Since no opcode is not there
+        b=rri[a] #Searching for values
+        print(b)
+        a=""
+        i=int(b,16) #typecasting along with converting to base-10 from base-16 
+        i=bin(i) #Converting base-10 to base-2
+        b=i[2:] #Removing first two bits as after conversion outcme is like "ob----"
+        if (len(b)!=16): #Example while convertig '13A' onlu 12 bits will come,so adding more 4 bits before
+            l=16-len(b)
+            b="0"*(l)+b #Adding extra bits
+            convertbinary=convertbinary+b
+            fw.write(b)
+            fw.write("\n")
+            
+            wait= input("Press enter to convert next line")
+            
+            b=""
+    elif (ch=="@" or ch=="#" or ch=="\n"):
+        if a in op.keys(): # comparing values with "opcode dictionary"
+            flag=1 #Since opcode is there flag is equal to 1
+            b=b+op[a]
+            a=""
+        if  ch in mode.keys(): # comparing values with "modes"
+            b=mode[ch]+b
+            i=int(b,2)
+            i=hex(i)
+            b=i[2:]
+        elif (ch=="\n" and flag==1): #Since 'b' contains base-16 value
+            b=b+a #a contains the address ex-13A
+            print(b)
+            i=int(b,16)
+            i=bin(i)
+            b=i[2:]
+            a=""
+            if (len(b)!=16):
+                l=16-len(b)
+                b="0"*(l)+b
+            convertbinary=convertbinary+b
+            fw.write(b)
+            fw.write("\n")
+            
+            wait= input("Press enter to convert next line")
+            
+            b=""
+            flag=0
+            i=0
+f.close()
+fw.close()
+while (k<len(convertbinary)): #'Convertbinary' is the concatenation of whole 'stringfile.txt' file
+    b=convertbinary[k:k+8] #Taking 8bits and encoding it into ASCII i.e.., 1 line of code to 2 byte
+    c=int(b,2)
+    arr = bytes(c)
+    fb.write(arr)
+    k=k+8
