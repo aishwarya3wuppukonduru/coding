@@ -1,0 +1,590 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct student{
+    int index;
+    int rollno;
+    char name[30];
+    float mark;
+}stud;
+
+//    FUNCTION TO CHECK GIVEN ROLL NO IS AVAILABLE //
+int avlrollno(int rno){
+    FILE *fp;
+    int c = 0;
+    fp = fopen("Record", "r");
+    while (!feof(fp)){
+        fread(&stud, sizeof(stud), 1, fp);
+
+        if (rno == stud.rollno){
+            fclose(fp);
+            return 1;
+        }
+    }
+    fclose(fp);
+    return 0;
+}
+
+
+//    FUNCTION TO INSERT RECORDS TO THE FILE
+void insert(){
+    FILE *fp;
+    char ch;
+    stud.index=stud.index+1;
+    fp = fopen("Record", "a");
+    printf("Enter the Roll no   :");
+    scanf("%d", &stud.rollno);
+    printf("Enter the Name      :");
+    scanf("%s", stud.name);
+    printf("Enter the mark      :");
+    scanf("%f", &stud.mark);
+    fwrite(&stud, sizeof(stud), 1, fp);
+ /*printf("\nindex\tRoll Number\tName\tMark\n\n");
+ ch = fgetc(fp);
+ while ((ch = fgetc(fp)) != EOF){
+      printf("  %d\t%d\t\t%s\t%.2f\n", stud.index,stud.rollno, stud.name, stud.mark);
+ }*/
+    fclose(fp);
+}
+
+//    FUNCTION TO DISPLAY RECORDS
+void disp(){
+    FILE *fp1;
+    int low,high;
+    printf("\nEnter the lower range Roll no  :");
+    scanf("%d", &low);
+    printf("\nEnter the higher range ranRoll no :");
+    scanf("%d", &high);
+    fp1 = fopen("Record", "r");
+    printf("\nindex\tRoll Number\tName\tMark\n\n");
+    while (fread(&stud, sizeof(stud), 1, fp1)){
+        if((stud.rollno>=low)&&(stud.rollno<=high))
+        printf("  %d\t%d\t\t%s\t%.2f\n", stud.index,stud.rollno, stud.name, stud.mark);
+    }
+
+    fclose(fp1);
+}
+
+//    FUNCTION TO SEARCH THE GIVEN RECORD
+void search(){
+    FILE *fp2;
+    int r, s, avl;
+    printf("\nEnter the Roll no you want to search  :");
+    scanf("%d", &r);
+    avl = avlrollno(r);
+    if (avl == 0)
+    printf("Roll No %d is not available in the file\n",r);
+    else{
+        fp2 = fopen("Record", "r");
+        while (fread(&stud, sizeof(stud), 1, fp2)){
+            s = stud.rollno;
+            if (s == r){
+                printf("\nindex = %d", stud.index);   
+                printf("\nRoll no = %d", stud.rollno);
+                printf("\nName    = %s", stud.name);
+                printf("\nMark    = %.2f\n", stud.mark);
+            }
+        }
+        fclose(fp2);
+    }
+}
+
+
+//    FUNCTION TO DELETE A RECORD
+void deletefile(){
+    FILE *fpo;
+    FILE *fpt;
+    int r, s;
+    printf("Enter the Roll no you want to delete :");
+    scanf("%d", &r);
+    if (avlrollno(r) == 0)
+    printf("Roll no %d is not available in the file\n", r);
+    else{
+        fpo = fopen("Record", "r");
+        fpt = fopen("TempFile", "w");
+        stud.index=0;
+        int cou=0;
+        while (fread(&stud, sizeof(stud), 1, fpo)){
+            s = stud.rollno;
+            if (s != r){
+                stud.index=cou;
+                fwrite(&stud, sizeof(stud), 1, fpt);
+                cou=cou+1;
+            }
+        }
+        fclose(fpo);
+        fclose(fpt);
+        fpo = fopen("Record", "w");
+        fpt = fopen("TempFile", "r");
+        while (fread(&stud, sizeof(stud), 1, fpt)){
+            fwrite(&stud, sizeof(stud), 1, fpo);  
+        }
+        printf("\nRECORD DELETED\n");
+        fclose(fpo);
+        fclose(fpt);
+    }
+
+}
+
+
+//    FUNCTION TO UPDATE THE RECORD
+void update(){
+    FILE *fp2;
+    int s;
+    char r[30];
+    printf("\nEnter the name you want to search  :");
+    scanf("%s", r);
+    fp2 = fopen("Record","r");
+    while (fread(&stud, sizeof(stud), 1, fp2)){
+        s=stud.name;
+        if (strcmp(s,r)==0){
+            printf("\nindex = %d", stud.index);   
+            printf("\nRoll no = %d", stud.rollno);
+            printf("\nName    = %s", stud.name);
+            printf("\nMark    = %.2f\n", stud.mark);
+            break;
+        }
+    }
+    fclose(fp2);
+ 
+}
+
+
+
+/* FUNCTION TO MERGESORT THE RECORD */
+void mergeSort(int list[],int low,int mid,int high){
+    int i, mi, k, lo, temp[50];
+ 
+    lo = low;
+    i = low;
+    mi = mid + 1;
+    while ((lo <= mid) && (mi <= high)){
+        if (list[lo] <= list[mi]){
+            temp[i] = list[lo];
+            lo++;
+        }
+        else{
+            temp[i] = list[mi];
+            mi++;
+        }
+        i++;
+    }
+    if (lo > mid){
+        for (k = mi; k <= high; k++){
+            temp[i] = list[k];
+            i++;
+        }
+    }
+    else{
+        for (k = lo; k <= mid; k++){
+             temp[i] = list[k];
+             i++;
+        }
+    }
+ 
+    for (k = low; k <= high; k++){
+        list[k] = temp[k];
+    }
+}
+
+void partition(int list[],int low,int high){
+    int mid;
+ 
+    if(low < high){
+        mid = (low + high) / 2;
+        partition(list, low, mid);
+        partition(list, mid + 1, high);
+        mergeSort(list, low, mid, high);
+    }
+}
+
+void sort(){
+    int a[1000000], count = 0, i, j, t, c;
+    FILE *fpo;
+    fpo = fopen("Record", "r");
+    while (fread(&stud, sizeof(stud), 1, fpo)){
+        a[count] = stud.rollno;
+        count++;
+    }
+    c = count;
+    partition(a, 0, c - 1);
+ 
+ /*
+ for (i = 0; i<count - 1; i++)
+ {
+  for (j = i + 1; j<count; j++)
+  {
+   if (a[i]>a[j])
+   {
+    t = a[i];
+    a[i] = a[j];
+    a[j] = t;
+   }
+  }
+ }*/
+    printf("index\tRoll No.\tName\t\tMark\n\n");
+    count = c;
+    for (i = 0; i<count; i++){
+        rewind(fpo);
+        while (fread(&stud, sizeof(stud), 1, fpo)){
+            if (a[i] == stud.rollno)
+            printf("\n %d\t%d\t\t %s \t\t %2f",stud.index,stud.rollno, stud.name, stud.mark);
+        }
+    }
+}
+
+//FUNCTION TO CHECK THE FILE IS EMPTY OR NOT
+int empty(){
+    int c = 0;
+    FILE *fp;
+    fp = fopen("Record", "r");
+    while (fread(&stud, sizeof(stud), 1, fp))
+    c = 1;
+    fclose(fp);
+    return c;
+}
+
+int main(void){
+    static const char filenam[] = "tg.txt";
+    FILE *file = fopen ( filenam, "r" );
+   //FILE *of;
+    int ts, js;
+    char cht;
+    FILE *of;
+    char line[128]; /* or other suitable maximum line size */
+    if ( file != NULL ){
+        ts=0;
+        while ( fgets ( line, sizeof line, file ) != NULL ) /* read a line */{
+            if((ts<100000)&&(ts>=0)){
+                char cht;
+                of = fopen("1.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+          
+            if((ts<200000)&&(ts>=100000)){
+                char cht;
+                of = fopen("2.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<300000)&&(ts>=200000)){
+                char cht;
+                of = fopen("3.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<400000)&&(ts>=300000)){
+                char cht;
+                of = fopen("4.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<500000)&&(ts>=400000)){
+                char cht;
+                of = fopen("5.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<600000)&&(ts>=500000)){
+                char cht;
+                of = fopen("6.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<700000)&&(ts>=600000)){
+                char cht;
+                of = fopen("7.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            } 
+            if((ts<800000)&&(ts>=700000)){
+                char cht;
+                of = fopen("8.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<900000)&&(ts>=800000)){
+                char cht;
+                of = fopen("9.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            if((ts<1000000)&&(ts>=900000)){
+                char cht;
+                of = fopen("10.txt", "a");
+                if(of == NULL){
+                    printf("Error!");
+                    exit(1);
+                }
+                fprintf(of,"%s", line);
+                fclose(of);
+            }
+            //strcpy(arra, line);
+            //printf("array ----> %s ", &arra);
+            ts++;
+        }
+        fclose ( file );
+     }
+    else{
+        perror ( filenam ); /* why didn't the file open? */
+    }
+	
+    FILE *fs1, *fs2,*fs3,*fs4,*fs5,*fs6,*fs7,*fs8,*fs9,*fs10, *ft;
+    FILE *fptrr;
+    char ch, file1[20], file2[20], file3[20];
+    fs1 = fopen("1.txt", "r");
+    fs2 = fopen("2.txt", "r");
+    fs3 = fopen("3.txt", "r");
+    fs4 = fopen("4.txt", "r");
+    fs5 = fopen("5.txt", "r");
+    fs6 = fopen("6.txt", "r");
+    fs7 = fopen("7.txt", "r");
+    fs8 = fopen("8.txt", "r");
+    fs9 = fopen("9.txt", "r");
+    fs10 = fopen("10.txt", "r"); 
+ 
+    if(fs1 == NULL || fs2 == NULL || fs3 == NULL || fs4 == NULL || fs5 == NULL || fs6 == NULL || fs7 == NULL || fs8 == NULL || fs9 == NULL || fs10 == NULL){
+        perror("Error ");
+        printf("Press any key to exit...\n");
+        exit(EXIT_FAILURE);
+    }
+ 
+    ft = fopen("outt.txt", "w"); // Opening in write mode
+ 
+    if(ft == NULL){
+        perror("Error ");
+        printf("Press any key to exit...\n");
+        exit(EXIT_FAILURE);
+    }
+ 
+    while((ch = fgetc(fs1)) != EOF)
+        fputc(ch,ft);
+    //fputs("\n",ft);
+    while((ch = fgetc(fs2)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs3)) != EOF)
+        fputc(ch,ft);
+    //fputs("\n",ft);
+    while((ch = fgetc(fs4)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs5)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs6)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs7)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs8)) != EOF)
+        fputc(ch,ft);
+    //fputs("\n",ft);
+    while((ch = fgetc(fs9)) != EOF)
+        fputc(ch,ft);
+    // fputs("\n",ft);
+    while((ch = fgetc(fs10)) != EOF)
+        fputc(ch,ft);
+    //fputs("\n",ft);
+ 
+    //printf("The ten files were merged into %s file successfully.\n", ft);
+ 
+    fclose(fs1);
+    fclose(fs2);
+    fclose(fs3);
+    fclose(fs4);
+    fclose(fs5);
+    fclose(fs6);
+    fclose(fs7);
+    fclose(fs8);
+    fclose(fs9);
+    fclose(fs10);
+    fclose(ft);
+    FILE *fptr;
+    char filename[15];
+    char chs;
+    /*  open the file for reading */
+    fptr = fopen("outt.txt", "r");
+    if (fptr == NULL){
+        printf("Cannot open file \n");
+        exit(0);
+    }
+    chs = fgetc(fptr);
+    while (chs != EOF){
+        printf ("%c", chs);
+        chs = fgetc(fptr);
+    }
+    fclose(fptr);
+    int lines_allocated = 1000000;
+    int max_line_len = 800;
+
+    /* Allocate lines of text */
+    char **words = (char **)malloc(sizeof(char*)*lines_allocated);
+    if (words==NULL){
+        
+        fprintf(stderr,"Out of memory (1).\n");
+        exit(1);
+    }
+
+    FILE *fp = fopen("outt.txt", "r");
+    if (fp == NULL){
+        fprintf(stderr,"Error opening file.\n");
+        exit(2);
+    }
+
+    int i;
+    for (i=0;1;i++){
+        int j;
+
+        /* Have we gone over our line allocation? */
+        if (i >= lines_allocated){
+            int new_size;
+
+            /* Double our allocation and re-allocate */
+            new_size = lines_allocated*2;
+            words = (char **)realloc(words,sizeof(char*)*new_size);
+            if (words==NULL){
+                fprintf(stderr,"Out of memory.\n");
+                exit(3);
+            }
+            lines_allocated = new_size;
+        }
+        /* Allocate space for the next line */
+        words[i] = malloc(max_line_len);
+        if (words[i]==NULL){
+            fprintf(stderr,"Out of memory (3).\n");
+            exit(4);
+        }
+        if (fgets(words[i],max_line_len-1,fp)==NULL)
+            break;
+
+        /* Get rid of CR or LF at end of line */
+        for (j=strlen(words[i])-1;j>=0 && (words[i][j]=='\n' || words[i][j]=='\r');j--);
+        words[i][j+1]='\0';
+    }
+    int h;        
+    for(h = 0; h < i; h++){
+        char splitStrings[10][100]; //can store 10 words of 10 characters
+        int f,g,cnt,indexval;
+        indexval=h;
+        g=0; cnt=0;
+        char str[100];
+        strcpy (str,words[h]);
+        for(f=0;f<=(strlen(str));f++){
+        // if space or NULL found, assign NULL into splitStrings[cnt]
+        if(str[f]==' '||str[f]=='\0'){
+            splitStrings[cnt][g]='\0';
+            cnt++;  //for next word
+            g=0;    //for next word, init index to 0
+        }
+        else{
+            splitStrings[cnt][g]=str[f];
+            g++;
+        }
+    }
+    struct student{
+        int index;    
+        int rollno;
+        char name[30];
+        float mark;
+    }stud;
+	FILE *fp;
+    fp = fopen("Record", "a");
+    stud.index=indexval;
+	stud.rollno=atoi(splitStrings[0]);
+	strcpy (stud.name,splitStrings[1]);
+	//stud.name=splitStrings[f];
+	stud.mark=atof(splitStrings[2]);
+    fwrite(&stud, sizeof(stud), 1, fp);
+    fclose(fp);
+	   
+    }
+    stud.index=h-1;
+    int c, emp;
+    do{
+        printf("\n\t---Select your choice---------\n");
+        printf("\n\t1. SORT\n\t2. SEARCH BY ROLLNO\n\t3. DISPLAY RANGE");
+        printf("\n\t4. INSERT\n\t5. DELETE\n\t6. SEARCH BY NAME");
+        printf("\n\t7. EXIT");
+        printf("\n\n------------------------------------------\n");
+        printf("\nEnter your choice:");
+        scanf("%d", &c);
+        printf("\n");
+        switch (c){
+            case 1:
+      
+                emp = empty();
+                if (emp == 0)
+                printf("\n The file is EMPTY\n");
+                else
+                sort();
+                break;      
+            case 2:
+                search();
+                break;      
+            case 3:
+                emp = empty();
+                if (emp == 0)
+                printf("\nThe file is EMPTY\n");
+                else
+                disp();
+                break;      
+            case 4:
+                insert();
+                break;
+            case 5:
+                deletefile();
+                break;
+            case 6:
+                update();
+                break;
+            case 7:
+                exit(1);
+                break;
+            default:
+                printf("\nYour choice is wrong\nPlease try again...\n");
+                break;
+            
+        }
+    } 
+    while (c != 7);
+}    
