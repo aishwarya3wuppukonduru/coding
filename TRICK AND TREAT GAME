@@ -1,0 +1,256 @@
+#include <iostream>
+#include <time.h>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iomanip>
+#include <algorithm>
+#include <bits/stdc++.h> 
+using namespace std; 
+
+//Contains all the numbers(4536 numbers)
+vector<int> number;//1023 to 9876 (array words 0 to 4535)
+
+const unsigned int LEN = 4;
+
+using namespace std;
+class treatortreat_Player
+{
+public:
+    treatortreat_Player() { fillPool(); }
+    void play() { secret = createSecret(); guess(); }
+ 
+private:
+    void guess()
+    {
+	pair<int, int> res; int cc = 1;
+	cout << endl << " SECRET: " << secret << endl << "================================" << endl;
+	cout << "|   GUESS   |  trick  |  treat  |\n";
+	while( true )
+	{
+	    string gs = gimmeANumber();
+	    if( gs.empty() ) { cout << endl << "Something went wrong with the scoring..." << endl << "Cannot find an answer!" << endl; return; }
+	    if( scoreIt( gs, res ) ) { cout << endl << "I found the secret number!" << endl << "It is: " << gs << endl; return; }
+	    cout << "|    " << gs << "   |  " << setw( 3 ) <<  res.second<< "    |  " << setw( 3 ) << res.first << "   |\n";
+	    clearPool( gs, res );
+        }
+    }
+ 
+    void clearPool( string gs, pair<int, int>& r )
+    {
+	vector<string>::iterator pi = pool.begin();
+	while( pi != pool.end() )
+	{
+	    if( removeIt( gs, ( *pi ), r ) ) pi = pool.erase( pi );
+	    else  pi++;
+	}
+    }
+ 
+    string gimmeANumber()
+    {
+	if( pool.empty() ) return "";
+	return pool[rand() % pool.size()];
+    }
+ 
+    void fillPool()
+    {
+	for( int x = 1023; x < 9877; x++ )
+	{
+	    ostringstream oss; oss << x;
+	    if( check( oss.str() ) ) pool.push_back( oss.str() );
+	}
+    }
+ 
+    bool check( string s )
+    {
+	for( string::iterator si = s.begin(); si != s.end(); si++ )
+	{
+	    //if( ( *si ) == '0' ) return false;   Activate this if zero is not included.
+	    if( count( s.begin(), s.end(), ( *si ) ) > 1 ) return false;
+	}
+	return true;
+    }
+ 
+    bool removeIt( string gs, string ts, pair<int, int>& res )
+    {
+	pair<int, int> tp; getScore( gs, ts, tp );
+	return tp != res;
+    }
+ 
+    bool scoreIt( string gs, pair<int,int>&res )
+    {
+	getScore( gs, secret, res );
+	return res.first == LEN;
+    }
+ 
+    void getScore( string gs, string st, pair<int, int>& pr )
+    {
+	pr.first = pr.second = 0;
+	for( unsigned int ui = 0; ui < LEN; ui++ )
+	{
+	    if( gs[ui] == st[ui] ) pr.first++;
+	    else
+	    {
+		for( unsigned int vi = 0; vi < LEN; vi++ )
+		    if( gs[ui] == st[vi] ) pr.second++;
+	    }
+	}
+    }
+ 
+    string createSecret()
+    {
+	string rs = "";
+	cout << "Enter 4 digit secret number: (XXXX)" << endl;
+    cin >> rs;
+	return rs;
+    }
+ 
+    string secret;
+    vector<string> pool;
+};
+
+//Formation of numbers with non repeating digits
+
+int repeated_digit(int n) 
+{ 
+    int z=n;
+    unordered_set<int> s; 
+  
+    // Traversing through each digit 
+    while(n != 0) 
+    { 
+        int d = n % 10; 
+  
+        // if the digit is present 
+        // more than once in the 
+        // number 
+        if(s.find(d) != s.end()) 
+        { 
+            // return 0 if the number 
+            // has repeated digit 
+            return 0; 
+        } 
+        s.insert(d); 
+        n = n / 10; 
+    } 
+    // return 1 if the number has  
+    // no repeated digit
+    number.push_back(z);
+    return 1; 
+} 
+  
+// Function to find total number 
+// in the given range which has 
+// no repeated digit 
+int calculate(int L,int R) 
+{ 
+    int answer = 0; 
+  
+    // Traversing through the range 
+    for(int i = L; i < R + 1; ++i) 
+    { 
+  
+        // Add 1 to the answer if i has 
+        // no repeated digit else 0 
+        answer = answer + repeated_digit(i); 
+    } 
+  
+    return answer ; 
+} 
+
+int main(int argc, char* argv[] ) {
+    int trick;
+    int treat;
+    int pc_or_player;
+    int find_count;
+    int value1;
+    int value2;
+    int value3;
+    int value4;
+    int calculate_treat;
+    string guess = "";
+    bool run_game = true;
+    char again;
+    bool win;
+    cout << "Welcome to the trick and treat game!" << endl;
+    while (run_game == true) {
+        cout << "You want whom to guess...???" << endl;
+        cout << "1> You will guess" << endl;
+        cout << "2> Let computer guess" << endl;
+        cout << "---------------------" << endl;
+        cout << "Enter your choice: " << endl;
+        cin >> pc_or_player;
+        cout << "---------------------" << endl;
+        if( pc_or_player==1 ){
+
+            int L = 1000, R = 9999; 
+            // Calling the calculate 
+            calculate(L, R);  
+            
+            
+            trick = 0;
+            treat = 0;
+            find_count = 0;
+            calculate_treat = 0;
+            //random number generation begin
+            srand(time(NULL));
+            int RandIndex = rand() % 4536; //generates a random number between 0 and 3
+            ostringstream geek;
+            geek << number[RandIndex];
+            string secret_number = geek.str();
+            //cout<<secret_number<<endl;
+            win = false;
+            while (win == false) {
+                cout << "Make a guess: (XXXX)" << endl;
+                cin >> guess;
+
+                for (int i = 0; i < secret_number.length(); i++) {
+                    if (guess.at(i) == secret_number.at(i)) {
+                        treat++;
+                    }
+                }
+
+                for (int i = 0; i < guess.length(); i++) {
+                    int secret = secret_number.at(i);
+                    if (guess.find(secret)) {
+                        find_count++;
+                    }
+                }
+
+                for (int i = 0; i < secret_number.length(); i++) {
+                    for (int j = 0; j < secret_number.length(); j++){
+                        if ((guess.at(i) == secret_number.at(j))&&(guess.at(i) != secret_number.at(i))) {
+                            trick++;
+                        }
+                    }
+                }
+
+                cout << "treat: " << treat << endl << "trick: " << trick << endl;
+                if (treat == 4) {
+                    cout << "You win!" << endl;
+                    win = true;
+                }
+                else {
+                    trick = 0;
+                    treat = 0;
+                    find_count = 0;
+                }
+            }
+        }
+    
+        if(pc_or_player==2){
+            srand( static_cast<unsigned int>( time( NULL ) ) ); treatortreat_Player cb;
+            cb.play(); cout << endl << endl;
+        }
+        cout << "Play again? (y/n)" << endl;
+        cin >> again;
+        run_game = (again == 'y') ? true : false;
+    }
+    cout << "***********************" << endl;
+    cout << "***********************" << endl;
+    cout << "Thanks for playing! :)" << endl;
+    return 0;
+}
+
+
+
